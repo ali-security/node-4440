@@ -1,7 +1,7 @@
 language: cpp
 cache: ccache
 os: linux
-dist: xenial
+dist: focal
 matrix:
   include:
     - name: "First commit message adheres to guidelines at <a href=\"https://goo.gl/p2fr5Q\">https://goo.gl/p2fr5Q</a>"
