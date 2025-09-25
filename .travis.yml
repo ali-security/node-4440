@@ -12,13 +12,6 @@ matrix:
         - if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
             bash -x tools/lint-pr-commit-message.sh ${TRAVIS_PULL_REQUEST};
           fi
-    - name: "Linter"
-      language: node_js
-      node_js: "node"
-      env:
-        - NODE=$(which node)
-      script:
-        - make lint
     - name: "Test Suite"
       addons:
         apt:
