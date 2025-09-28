@@ -659,7 +659,9 @@ Http2Session::~Http2Session() {
   Debug(this, "freeing nghttp2 session");
   for (const auto& stream : streams_)
     stream.second->session_ = nullptr;
+  streams_.clear();
   nghttp2_session_del(session_);
+  session_ = nullptr;
   CHECK_EQ(current_nghttp2_memory_, 0);
   free(stream_buf_allocation_.base);
 }
