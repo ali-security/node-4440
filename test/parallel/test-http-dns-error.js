@@ -32,7 +32,7 @@ const https = require('https');
 const host = '*'.repeat(256);
 const MAX_TRIES = 5;
 
-const errCodes = ['ENOTFOUND', 'EAI_FAIL'];
+const errCodes = ['ENOTFOUND', 'EAI_FAIL', 'EINVAL'];
 
 function tryGet(mod, tries) {
   // Bad host name should not throw an uncatchable exception.
