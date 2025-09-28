@@ -65,6 +65,17 @@ typedef unsigned __int64 uint64_t;
 # define HTTP_MAX_HEADER_SIZE (80*1024)
 #endif
 
+/* Maximum chunk extension size allowed. If the macro is not defined
+ * before including this header then the default is used. To
+ * change the maximum chunk extension size, define the macro in the build
+ * environment (e.g. -DHTTP_MAX_CHUNK_EXTENSIONS_SIZE=<value>). To remove
+ * the effective limit on the size of chunk extensions, define the macro
+ * to a very large number (e.g. -DHTTP_MAX_CHUNK_EXTENSIONS_SIZE=0x7fffffff)
+ */
+#ifndef HTTP_MAX_CHUNK_EXTENSIONS_SIZE
+# define HTTP_MAX_CHUNK_EXTENSIONS_SIZE (16*1024)
+#endif
+
 typedef struct http_parser http_parser;
 typedef struct http_parser_settings http_parser_settings;
 
@@ -273,6 +284,8 @@ enum flags
      "unexpected content-length header")                             \
   XX(INVALID_CHUNK_SIZE,                                             \
      "invalid character in chunk size header")                       \
+  XX(CHUNK_EXTENSIONS_OVERFLOW,                                      \
+     "chunk extensions overflow")                                    \
   XX(INVALID_CONSTANT, "invalid constant string")                    \
   XX(INVALID_INTERNAL_STATE, "encountered unexpected internal state")\
   XX(STRICT, "strict mode assertion failed")                         \
@@ -308,6 +321,7 @@ struct http_parser {
   unsigned int lenient_http_headers : 1;
 
   uint32_t nread;          /* # bytes read in various scenarios */
+  uint32_t chunk_extensions_nread; /* # bytes read in chunk extensions */
   uint64_t content_length; /* # bytes in body. `(uint64_t) -1` (all bits one)
                             * if no Content-Length header.
                             */
@@ -442,6 +456,9 @@ int http_body_is_final(const http_parser *parser);
 
 /* Change the maximum header size provided at compile time. */
 void http_parser_set_max_header_size(uint32_t size);
+
+/* Change the maximum chunk extensions size provided at compile time. */
+void http_parser_set_max_chunk_extensions_size(uint32_t size);
 
 #ifdef __cplusplus
 }
