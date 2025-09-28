@@ -657,11 +657,16 @@ Http2Session::Http2Session(Environment* env,
 Http2Session::~Http2Session() {
   CHECK_EQ(flags_ & SESSION_STATE_HAS_SCOPE, 0);
   Debug(this, "freeing nghttp2 session");
-  for (const auto& stream : streams_)
-    stream.second->session_ = nullptr;
-  nghttp2_session_del(session_);
+  // Ensure that all `Http2Stream` instances and the memory they hold
+  // on to are destroyed before the nghttp2 session is.
+  for (const auto& [id, stream] : streams_) {
+    stream->Destroy();
+  }
+  streams_.clear();
+  // Explicitly reset session_ so the subsequent
+  // current_nghttp2_memory_ check passes.
+  session_.reset();
   CHECK_EQ(current_nghttp2_memory_, 0);
-  free(stream_buf_allocation_.base);
 }
 
 std::string Http2Session::diagnostic_name() const {
