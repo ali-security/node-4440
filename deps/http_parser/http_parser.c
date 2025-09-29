@@ -26,6 +26,7 @@
 #include <limits.h>
 
 static uint32_t max_header_size = HTTP_MAX_HEADER_SIZE;
+static uint32_t max_chunk_extensions_size = HTTP_MAX_CHUNK_EXTENSIONS_SIZE;
 
 #ifndef ULLONG_MAX
 # define ULLONG_MAX ((uint64_t) -1) /* 2^64-1 */
@@ -2005,6 +2006,8 @@ reexecute:
         assert(nread == 1);
         assert(parser->flags & F_CHUNKED);
 
+        parser->chunk_extensions_nread = 0; /* Reset chunk extensions counter */
+
         unhex_val = unhex[(unsigned char)ch];
         if (UNLIKELY(unhex_val == -1)) {
           SET_ERRNO(HPE_INVALID_CHUNK_SIZE);
@@ -2056,7 +2059,11 @@ reexecute:
       case s_chunk_parameters:
       {
         assert(parser->flags & F_CHUNKED);
-        /* just ignore this shit. TODO check for overflow */
+        parser->chunk_extensions_nread++;
+        if (parser->chunk_extensions_nread > max_chunk_extensions_size) {
+          SET_ERRNO(HPE_CHUNK_EXTENSIONS_OVERFLOW);
+          goto error;
+        }
         if (ch == CR) {
           UPDATE_STATE(s_chunk_size_almost_done);
           break;
@@ -2579,4 +2586,9 @@ http_parser_version(void) {
 void
 http_parser_set_max_header_size(uint32_t size) {
   max_header_size = size;
+}
+
+void
+http_parser_set_max_chunk_extensions_size(uint32_t size) {
+  max_chunk_extensions_size = size;
 }
