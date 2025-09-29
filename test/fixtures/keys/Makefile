@@ -36,8 +36,6 @@ all: \
   rsa_public_1024.pem \
   rsa_public_2048.pem \
   rsa_public_4096.pem \
-  irrelevant_san_correct_subject-cert.pem \
-  irrelevant_san_correct_subject-key.pem \
 
 #
 # Create Certificate Authority: ca1
@@ -572,18 +570,6 @@ rsa_public_2048.pem: rsa_private_2048.pem
 rsa_public_4096.pem: rsa_private_4096.pem
 	openssl rsa -in rsa_private_4096.pem -pubout -out rsa_public_4096.pem
 
-irrelevant_san_correct_subject-cert.pem: irrelevant_san_correct_subject-key.pem
-	openssl req -x509 \
-	            -key irrelevant_san_correct_subject-key.pem \
-	            -out irrelevant_san_correct_subject-cert.pem \
-	            -sha256 \
-	            -days 3650 \
-	            -subj "/CN=good.example.com" \
-	            -addext "subjectAltName = IP:1.2.3.4"
-
-irrelevant_san_correct_subject-key.pem:
-	openssl ecparam -name prime256v1 -genkey -noout -out irrelevant_san_correct_subject-key.pem
-	
 clean:
 	rm -f *.pfx *.pem *.srl ca2-database.txt ca2-serial fake-startcom-root-serial *.print *.old fake-startcom-root-issued-certs/*.pem
 	@> fake-startcom-root-database.txt
