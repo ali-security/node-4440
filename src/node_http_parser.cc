@@ -782,8 +782,6 @@ const struct http_parser_settings Parser::settings = {
 void InitMaxHttpHeaderSizeOnce() {
   const uint32_t max_http_header_size = per_process_opts->max_http_header_size;
   http_parser_set_max_header_size(max_http_header_size);
-  // 16KB limit for chunk extensions
-  http_parser_set_max_chunk_extensions_size(16384); 
 }
 
 void Initialize(Local<Object> target,
