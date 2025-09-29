@@ -957,11 +957,6 @@ decrease overall server throughput.
 ## tls.checkServerIdentity(hostname, cert)
 <!-- YAML
 added: v0.8.4
-changes:
-  - version: REPLACEME
-    pr-url: https://github.com/nodejs-private/node-private/pull/300
-    description: Support for `uniformResourceIdentifier` subject alternative
-                 names has been disabled in response to CVE-2021-44531.
 -->
 
 * `hostname` {string} The host name or IP address to verify the certificate
@@ -1012,12 +1007,6 @@ similar to:
   serialNumber: '66593D57F20CBC573E433381B5FEC280',
   raw: <Buffer ... > }
 ```
-
-Earlier versions of Node.js incorrectly accepted certificates for a given
-`hostname` if a matching `uniformResourceIdentifier` subject alternative name
-was present (see [CVE-2021-44531][]). Applications that wish to accept
-`uniformResourceIdentifier` subject alternative names can use a custom
-`options.checkServerIdentity` function that implements the desired behavior.
 
 ## tls.connect(options[, callback])
 <!-- YAML
@@ -1581,7 +1570,6 @@ where `secureSocket` has the same API as `pair.cleartext`.
 [`tls.createSecureContext()`]: #tls_tls_createsecurecontext_options
 [`tls.createSecurePair()`]: #tls_tls_createsecurepair_context_isserver_requestcert_rejectunauthorized_options
 [`tls.createServer()`]: #tls_tls_createserver_options_secureconnectionlistener
-[CVE-2021-44531]: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44531
 [Chrome's 'modern cryptography' setting]: https://www.chromium.org/Home/chromium-security/education/tls#TOC-Cipher-Suites
 [DHE]: https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange
 [ECDHE]: https://en.wikipedia.org/wiki/Elliptic_curve_Diffie%E2%80%93Hellman
