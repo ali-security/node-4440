@@ -91,7 +91,7 @@ const tests = [
   {
     host: 'a.com',
     cert: { },
-    error: 'Cert is empty'
+    error: 'Cert does not contain a DNS name'
   },
 
   // Empty Subject w/DNS name
@@ -105,7 +105,8 @@ const tests = [
   {
     host: 'a.b.a.com', cert: {
       subjectaltname: 'URI:http://a.b.a.com/',
-    }
+    },
+    error: 'Cert does not contain a DNS name'
   },
 
   // Multiple CN fields
@@ -222,15 +223,15 @@ const tests = [
     host: 'a.b.a.com', cert: {
       subjectaltname: 'URI:http://a.b.a.com/',
       subject: {}
-    }
+    },
+    error: 'Cert does not contain a DNS name'
   },
   {
     host: 'a.b.a.com', cert: {
       subjectaltname: 'URI:http://*.b.a.com/',
       subject: {}
     },
-    error: 'Host: a.b.a.com. is not in the cert\'s altnames: ' +
-           'URI:http://*.b.a.com/'
+    error: 'Cert does not contain a DNS name'
   },
   // IP addresses
   {
@@ -238,8 +239,7 @@ const tests = [
       subjectaltname: 'IP Address:127.0.0.1',
       subject: {}
     },
-    error: 'Host: a.b.a.com. is not in the cert\'s altnames: ' +
-           'IP Address:127.0.0.1'
+    error: 'Cert does not contain a DNS name'
   },
   {
     host: '127.0.0.1', cert: {
