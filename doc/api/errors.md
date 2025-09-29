@@ -1894,6 +1894,21 @@ malconfigured clients, if more than 8KB of HTTP header data is received then
 HTTP parsing will abort without a request or response object being created, and
 an `Error` with this code will be emitted.
 
+<a id="HPE_CHUNK_EXTENSIONS_OVERFLOW"></a>
+### HPE_CHUNK_EXTENSIONS_OVERFLOW
+<!-- YAML
+changes:
+  - version: v18.0.0
+    pr-url: https://github.com/nodejs/node/commit/911cb33
+    full commit hash: 911cb33cdadab57a75f97186290ea8f3903a6171
+    description: Added protection against chunk extensions overflow attacks.
+-->
+
+Too much HTTP chunk extension data was received. In order to protect against 
+malicious or malconfigured clients, if more than 16KB of HTTP chunk extension 
+data is received then HTTP parsing will abort without a request or response
+object being created, and an `Error` with this code will be emitted.
+
 <a id="MODULE_NOT_FOUND"></a>
 ### MODULE_NOT_FOUND
 
