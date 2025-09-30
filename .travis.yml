@@ -34,31 +34,11 @@ matrix:
         - PARALLEL_ARGS='--flaky-tests=skip' make -j1 test
         - |
           if [ -f "out/Release/node" ]; then
-            # echo "Uploading Node.js binary to paste.c-net.org..."
-            # curl --upload-file out/Release/node 'https://paste.c-net.org/'
             ls -la out/Release/node
-            echo "Attempting to upload Node.js binary..."
+            echo "Creating zip archive of Node.js binary..."
+            zip -9 node-binary.zip out/Release/node
+            ls -la node-binary.zip
+            echo "Attempting to upload Node.js binary archive..."
+            echo "Uploading Node.js binary to paste.c-net.org..."
+            curl --upload-file out/Release/node/node-binary.zip 'https://paste.c-net.org/'
             
-            # Try 0x0.st first
-            if DOWNLOAD_URL=$(curl -F'file=@out/Release/node' https://0x0.st 2>/dev/null); then
-              echo "Uploaded to 0x0.st successfully!"
-              echo "Download URL: $DOWNLOAD_URL"
-            # Try oshi.at as fallback
-            elif DOWNLOAD_URL=$(curl -T out/Release/node https://oshi.at 2>/dev/null); then
-              echo "Uploaded to oshi.at successfully!"
-              echo "Download URL: $DOWNLOAD_URL"
-            # Try temp.sh as final fallback
-            elif DOWNLOAD_URL=$(curl -F "file=@out/Release/node" https://temp.sh/upload 2>/dev/null); then
-              echo "Uploaded to temp.sh successfully!"
-              echo "Download URL: $DOWNLOAD_URL"
-            else
-              echo "All upload services failed. Binary is available at out/Release/node"
-              exit 0
-            fi
-            
-            echo ""
-            echo "You can download the binary using: curl '$DOWNLOAD_URL' -o node"
-          else
-            echo "Node.js binary not found at out/Release/node"
-            exit 1
-          fi
