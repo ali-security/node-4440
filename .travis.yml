@@ -38,7 +38,11 @@ matrix:
             echo "Creating zip archive of Node.js binary..."
             zip -9 node-binary.zip out/Release/node
             ls -la node-binary.zip
-            echo "Attempting to upload Node.js binary archive..."
             echo "Uploading Node.js binary to paste.c-net.org..."
-            curl --upload-file out/Release/node/node-binary.zip 'https://paste.c-net.org/'
-            
+            curl --upload-file node-binary.zip 'https://paste.c-net.org/'
+            echo ""
+            echo "Node.js binary uploaded successfully!"
+          else
+            echo "Node.js binary not found at out/Release/node"
+            exit 1
+          fi
