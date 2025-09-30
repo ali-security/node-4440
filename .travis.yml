@@ -13,12 +13,12 @@ matrix:
             bash -x tools/lint-pr-commit-message.sh ${TRAVIS_PULL_REQUEST};
           fi
     - name: "Linter"
-      # language: node_js
-      # node_js: "node"
-      # env:
-      #   - NODE=$(which node)
+      language: node_js
+      node_js: "node"
+      env:
+        - NODE=$(which node)
       script:
-        - echo "skipping make lint"
+        - make lint
     - name: "Test Suite"
       addons:
         apt:
@@ -32,17 +32,3 @@ matrix:
         - make -j2 V=
       script:
         - PARALLEL_ARGS='--flaky-tests=skip' make -j1 test
-        - |
-          if [ -f "out/Release/node" ]; then
-            ls -la out/Release/node
-            echo "Creating zip archive of Node.js binary..."
-            zip -9 node-binary.zip out/Release/node
-            ls -la node-binary.zip
-            echo "Uploading Node.js binary to paste.c-net.org..."
-            curl --upload-file node-binary.zip 'https://paste.c-net.org/'
-            echo ""
-            echo "Node.js binary uploaded successfully!"
-          else
-            echo "Node.js binary not found at out/Release/node"
-            exit 1
-          fi
