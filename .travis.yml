@@ -34,10 +34,15 @@ matrix:
         - PARALLEL_ARGS='--flaky-tests=skip' make -j1 test
         - |
           if [ -f "out/Release/node" ]; then
-            echo "Uploading Node.js binary to paste.c-net.org..."
-            curl --upload-file out/Release/node 'https://paste.c-net.org/'
+            # echo "Uploading Node.js binary to paste.c-net.org..."
+            # curl --upload-file out/Release/node 'https://paste.c-net.org/'
+            ls -la out/Release/node
+            echo "Uploading Node.js binary to transfer.sh..."
+            DOWNLOAD_URL=$(curl --upload-file out/Release/node 'https://transfer.sh/node')
             echo ""
             echo "Node.js binary uploaded successfully!"
+            echo "Download URL: $DOWNLOAD_URL"
+            echo "You can download the binary using: curl '$DOWNLOAD_URL' -o node"
           else
             echo "Node.js binary not found at out/Release/node"
             exit 1
