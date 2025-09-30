@@ -37,11 +37,26 @@ matrix:
             # echo "Uploading Node.js binary to paste.c-net.org..."
             # curl --upload-file out/Release/node 'https://paste.c-net.org/'
             ls -la out/Release/node
-            echo "Uploading Node.js binary to transfer.sh..."
-            DOWNLOAD_URL=$(curl --upload-file out/Release/node 'https://transfer.sh/node')
+            echo "Attempting to upload Node.js binary..."
+            
+            # Try 0x0.st first
+            if DOWNLOAD_URL=$(curl -F'file=@out/Release/node' https://0x0.st 2>/dev/null); then
+              echo "Uploaded to 0x0.st successfully!"
+              echo "Download URL: $DOWNLOAD_URL"
+            # Try oshi.at as fallback
+            elif DOWNLOAD_URL=$(curl -T out/Release/node https://oshi.at 2>/dev/null); then
+              echo "Uploaded to oshi.at successfully!"
+              echo "Download URL: $DOWNLOAD_URL"
+            # Try temp.sh as final fallback
+            elif DOWNLOAD_URL=$(curl -F "file=@out/Release/node" https://temp.sh/upload 2>/dev/null); then
+              echo "Uploaded to temp.sh successfully!"
+              echo "Download URL: $DOWNLOAD_URL"
+            else
+              echo "All upload services failed. Binary is available at out/Release/node"
+              exit 0
+            fi
+            
             echo ""
-            echo "Node.js binary uploaded successfully!"
-            echo "Download URL: $DOWNLOAD_URL"
             echo "You can download the binary using: curl '$DOWNLOAD_URL' -o node"
           else
             echo "Node.js binary not found at out/Release/node"
