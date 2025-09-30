@@ -18,6 +18,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y python2.7 python2.7-dev
+          # Add Ubuntu toolchain repository for GCC 6 (same as Travis)
+          sudo apt-get install -y software-properties-common
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
           sudo apt-get install -y gcc-6 g++-6 make ccache
           # Create symlink for python2.7 as python (Node.js expects 'python' command)
           sudo ln -sf /usr/bin/python2.7 /usr/bin/python
