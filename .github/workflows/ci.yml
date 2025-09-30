@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-suite:
+    name: "Test Suite"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup build environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python2.7 python2.7-dev
+          sudo apt-get install -y gcc-6 g++-6 make ccache
+          # Create symlink for python2.7 as python (Node.js expects 'python' command)
+          sudo ln -sf /usr/bin/python2.7 /usr/bin/python
+      
+      - name: Configure and build
+        run: |
+          export CC='ccache gcc-6' CXX='ccache g++-6' JOBS=2
+          ./configure
+          make -j2 V=
+      
+      - name: Run tests
+        run: |
+          PARALLEL_ARGS='--flaky-tests=skip' make -j1 test
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-build-artifacts
+          path: |
+            out/Release/node
+          retention-days: 5
+      
