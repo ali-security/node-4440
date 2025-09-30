@@ -13,10 +13,10 @@ matrix:
             bash -x tools/lint-pr-commit-message.sh ${TRAVIS_PULL_REQUEST};
           fi
     - name: "Linter"
-      language: node_js
-      node_js: "node"
-      env:
-        - NODE=$(which node)
+      # language: node_js
+      # node_js: "node"
+      # env:
+      #   - NODE=$(which node)
       script:
         - echo "skipping make lint"
     - name: "Test Suite"
